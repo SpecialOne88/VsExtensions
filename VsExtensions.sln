@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMacros", "PowerMacros\PowerMacros.csproj", "{A65BAE68-53C3-407A-B357-6193B74B012F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMacros", "PowerMacros\PowerMacros.csproj", "{F6C6BE75-4CB9-45BF-9738-E732234D597F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +15,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Debug|arm64.ActiveCfg = Debug|arm64
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Debug|arm64.Build.0 = Debug|arm64
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Debug|x86.ActiveCfg = Debug|x86
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Debug|x86.Build.0 = Debug|x86
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Release|arm64.ActiveCfg = Release|arm64
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Release|arm64.Build.0 = Release|arm64
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Release|x86.ActiveCfg = Release|x86
-		{A65BAE68-53C3-407A-B357-6193B74B012F}.Release|x86.Build.0 = Release|x86
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Debug|arm64.ActiveCfg = Debug|arm64
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Debug|arm64.Build.0 = Debug|arm64
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Debug|x86.ActiveCfg = Debug|x86
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Debug|x86.Build.0 = Debug|x86
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Release|arm64.ActiveCfg = Release|arm64
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Release|arm64.Build.0 = Release|arm64
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Release|x86.ActiveCfg = Release|x86
+		{F6C6BE75-4CB9-45BF-9738-E732234D597F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

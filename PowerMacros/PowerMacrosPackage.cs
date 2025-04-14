@@ -25,14 +25,14 @@ namespace PowerMacros
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PowerMacrosPackage.PackageGuidString)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class PowerMacrosPackage : AsyncPackage
     {
         /// <summary>
         /// PowerMacrosPackage GUID string.
         /// </summary>
-        public const string PackageGuidString = "f0fbbde5-944c-400e-b8b2-cde886ec856a";
+        public const string PackageGuidString = "b64d8a74-a3e4-41c7-b6f0-fa6ac20b832a";
 
-        #region Package Members
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -46,8 +46,7 @@ namespace PowerMacros
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            await PowerMacros.Commands.MacrosCommand.InitializeAsync(this);
         }
-
-        #endregion
     }
 }

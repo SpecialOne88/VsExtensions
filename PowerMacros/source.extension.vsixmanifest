@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" ?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="PowerMacros.c1e0f274-3f46-4e84-a616-e188baec7197" Version="1.0" Language="en-US" Publisher="João Simão" />
+    <Identity Id="PowerMacros.bcddfb4b-b63a-4484-b4ac-9210d10ff6f2" Version="1.0" Language="en-US" Publisher="João Simão" />
     <DisplayName>PowerMacros</DisplayName>
     <Description>Empty VSIX Project.</Description>
   </Metadata>
