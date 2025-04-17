@@ -47,8 +47,11 @@
   <ItemGroup>
     <Compile Include="Commands\MacrosCommand.cs" />
     <Compile Include="Entities\Macro.cs" />
+    <Compile Include="Entities\RelayCommand.cs" />
+    <Compile Include="Entities\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PowerMacrosPackage.cs" />
+    <Compile Include="ViewModels\MacrosWindowViewModel.cs" />
     <Compile Include="Windows\MacrosWindow.cs" />
     <Compile Include="Windows\MacrosWindowControl.xaml.cs">
       <DependentUpon>MacrosWindowControl.xaml</DependentUpon>
