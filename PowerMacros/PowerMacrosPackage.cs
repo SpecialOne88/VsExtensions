@@ -26,6 +26,7 @@ namespace PowerMacros
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PowerMacrosPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideToolWindow(typeof(PowerMacros.Windows.MacrosWindow))]
     public sealed class PowerMacrosPackage : AsyncPackage
     {
         /// <summary>

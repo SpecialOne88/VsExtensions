@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <Extern href="stdidcmd.h"/>
-  <Extern href="vsshlids.h"/>
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
   <Commands package="guidMacroManagerPkg">
     <Groups>
       <Group guid="guidMacroManagerCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
       <Group guid="guidMacroManagerCmdSet" id="EditorContextMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
       </Group>
     </Groups>
     <Buttons>
@@ -28,13 +28,21 @@
           <CommandName>OpenMacroManager</CommandName>
         </Strings>
       </Button>
+      <Button guid="guidPowerMacrosPackageCmdSet" id="cmdidMacrosWindowCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="guidImages1" id="bmpPic1" />
+        <Strings>
+          <ButtonText>MacrosWindow</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
     <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\MacrosCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidImages" href="Resources\MacrosCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages1" href="..\Windows\Resources\MacrosWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
   <KeyBindings>
-    <KeyBinding guid="guidMacroManagerCmdSet" id="MacroManagerCommandId" editor="guidVSStd97" key1="M" mod1="Control Shift"/>
+    <KeyBinding guid="guidMacroManagerCmdSet" id="MacroManagerCommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" />
   </KeyBindings>
   <Symbols>
     <GuidSymbol name="guidMacroManagerPkg" value="{b64d8a74-a3e4-41c7-b6f0-fa6ac20b832a}" />
@@ -43,7 +51,20 @@
       <IDSymbol name="EditorContextMenuGroup" value="0x1021" />
       <IDSymbol name="MacroManagerCommandId" value="0x0100" />
     </GuidSymbol>
-    <GuidSymbol name="guidImages" value="{68c00bdc-fbee-4af0-b349-0847fed07741}" >
+    <GuidSymbol name="guidImages" value="{68c00bdc-fbee-4af0-b349-0847fed07741}">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{ae8b955d-367c-4ba4-a060-683fc39c2dfd}" name="guidPowerMacrosPackageCmdSet">
+      <IDSymbol value="256" name="cmdidMacrosWindowCommand" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{4f70e9a7-acee-446f-bc4a-06452e1264d7}" name="guidImages1">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />
