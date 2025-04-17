@@ -12,15 +12,30 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" HorizontalAlignment="Center">MacrosWindow</TextBlock>
-            <ListView x:Name="MainList" ItemsSource="{Binding MacrosList}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Name}" Margin="5"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <DataGrid ItemsSource="{Binding MacrosList, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding SelectedMacro}" CanUserAddRows="False" CanUserDeleteRows="False"
+                      HorizontalAlignment="Stretch" AutoGenerateColumns="False" SelectionMode="Single" CanUserResizeRows="False"
+                      CanUserSortColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True"></DataGridTextColumn>
+                    <DataGridTextColumn Header="MacroType" Binding="{Binding MacroType}" IsReadOnly="True"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Code" Binding="{Binding Code}" IsReadOnly="True"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Shortcut" Binding="{Binding Shortcut}" IsReadOnly="True"></DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Actions">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="✎" Width="20" Height="20" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Edit Macro"/>
+                                    <Button Content="❌" Width="20" Height="20" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Delete Macro"/>
+                                    <Button Content="⮝" Width="20" Height="20" Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Move Up"/>
+                                    <Button Content="⮟" Width="20" Height="20" Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Move Down"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
             <!--<Button Content="Click me!" Click="button1_Click" Width="120" Height="80" Name="button1"/>-->
         </StackPanel>
     </Grid>

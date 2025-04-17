@@ -42,7 +42,7 @@
     </Bitmaps>
   </Commands>
   <KeyBindings>
-    <KeyBinding guid="guidMacroManagerCmdSet" id="MacroManagerCommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="MacroManagerCommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="0" />
   </KeyBindings>
   <Symbols>
     <GuidSymbol name="guidMacroManagerPkg" value="{b64d8a74-a3e4-41c7-b6f0-fa6ac20b832a}" />

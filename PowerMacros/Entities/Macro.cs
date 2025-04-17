@@ -10,6 +10,11 @@ namespace PowerMacros.Entities
         public string Code { get; set; }
         public string Shortcut { get; set; }
         public List<MacroAction> Actions { get; set; } = new List<MacroAction>();
+
+        public override string ToString()
+        {
+            return $"{Name} - {Description} - {Shortcut}";
+        }
     }
 
     public enum MacroType
