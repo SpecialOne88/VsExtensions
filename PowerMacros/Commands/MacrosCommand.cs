@@ -1,40 +1,33 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PowerMacros.Utils;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace PowerMacros.Commands
 {
-    /// <summary>
-    /// Command handler
-    /// </summary>
     internal sealed class MacrosCommand
     {
-        /// <summary>
-        /// Command ID.
-        /// </summary>
         public const int CommandId = 0x0100;
-
-        /// <summary>
-        /// Command menu group (command set GUID).
-        /// </summary>
         public static readonly Guid CommandSet = new Guid("5e78657d-af1d-49b2-9217-a40c01798159");
-
-        /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
         private readonly AsyncPackage package;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MacrosCommand"/> class.
-        /// Adds our command handlers for menu (commands must exist in the command table file)
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        /// <param name="commandService">Command service to add command to, not null.</param>
+        public const int Macro1CommandId = 0x0200;
+        public const int Macro2CommandId = 0x0201;
+        public const int Macro3CommandId = 0x0202;
+        public const int Macro4CommandId = 0x0203;
+        public const int Macro5CommandId = 0x0204;
+        public const int Macro6CommandId = 0x0205;
+        public const int Macro7CommandId = 0x0206;
+        public const int Macro8CommandId = 0x0207;
+        public const int Macro9CommandId = 0x0208;
+        public const int Macro0CommandId = 0x0209;
+
         private MacrosCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
@@ -43,32 +36,25 @@ namespace PowerMacros.Commands
             var menuCommandID = new CommandID(CommandSet, CommandId);
             var menuItem = new MenuCommand(this.Execute, menuCommandID);
             commandService.AddCommand(menuItem);
+
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(1); }, new CommandID(CommandSet, Macro1CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(2); }, new CommandID(CommandSet, Macro2CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(3); }, new CommandID(CommandSet, Macro3CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(4); }, new CommandID(CommandSet, Macro4CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(5); }, new CommandID(CommandSet, Macro5CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(6); }, new CommandID(CommandSet, Macro6CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(7); }, new CommandID(CommandSet, Macro7CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(8); }, new CommandID(CommandSet, Macro8CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(9); }, new CommandID(CommandSet, Macro9CommandId)));
+            commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(0); }, new CommandID(CommandSet, Macro0CommandId)));
         }
 
-        /// <summary>
-        /// Gets the instance of the command.
-        /// </summary>
         public static MacrosCommand Instance
         {
             get;
             private set;
         }
 
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
-
-        /// <summary>
-        /// Initializes the singleton instance of the command.
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
             // Switch to the main thread - the call to AddCommand in MacrosCommand's constructor requires
@@ -79,13 +65,6 @@ namespace PowerMacros.Commands
             Instance = new MacrosCommand(package, commandService);
         }
 
-        /// <summary>
-        /// This function is the callback used to execute the command when the menu item is clicked.
-        /// See the constructor to see how the menu item is associated with this function using
-        /// OleMenuCommandService service and MenuCommand class.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="e">Event args.</param>
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -98,6 +77,27 @@ namespace PowerMacros.Commands
             }
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
+        private void ExecuteMacro(int index)
+        {
+            var macros = MacroLoader.LoadMacrosFromSettings();
+
+            if (macros == null || macros.Count == 0)
+            {
+                return;
+            }
+
+            var selectedMacro = macros.FirstOrDefault(x => x.Shortcut.Equals($"Shift+Ctrl+M, {index}"));
+            if (selectedMacro == null)
+            {
+                return;
+            }
+
+            if (selectedMacro.MacroType == Entities.MacroType.Code)
+            {
+                TextEditor.InsertTextInCurrentView(selectedMacro.Code);
+            }
         }
     }
 }

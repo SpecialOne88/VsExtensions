@@ -12,7 +12,7 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" HorizontalAlignment="Center">MacrosWindow</TextBlock>
-            <DataGrid ItemsSource="{Binding MacrosList, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+            <DataGrid ItemsSource="{Binding MacrosList, Mode=OneWay}"
                       SelectedItem="{Binding SelectedMacro}" CanUserAddRows="False" CanUserDeleteRows="False"
                       HorizontalAlignment="Stretch" AutoGenerateColumns="False" SelectionMode="Single" CanUserResizeRows="False"
                       CanUserSortColumns="False">
@@ -26,6 +26,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="✔" Width="20" Height="20" Command="{Binding DataContext.ApplyCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Execute Macro"/>
                                     <Button Content="✎" Width="20" Height="20" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Edit Macro"/>
                                     <Button Content="❌" Width="20" Height="20" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Delete Macro"/>
                                     <Button Content="⮝" Width="20" Height="20" Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Move Up"/>
@@ -36,7 +37,7 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <!--<Button Content="Click me!" Click="button1_Click" Width="120" Height="80" Name="button1"/>-->
+            <Button Content="Click me!" Command="{Binding AddMacroCommand}" Width="120" Height="80" Name="button1"/>
         </StackPanel>
     </Grid>
 </UserControl>

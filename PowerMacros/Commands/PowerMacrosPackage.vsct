@@ -35,6 +35,66 @@
           <ButtonText>MacrosWindow</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro1CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 1</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro2CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 2</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro3CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 3</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro4CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 4</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro5CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 5</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro6CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 6</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro7CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 7</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro8CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 8</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro9CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 9</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidMacroManagerCmdSet" id="Macro0CommandId" priority="0x0100" type="Button">
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <Strings>
+          <ButtonText>Execute Macro 0</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
     <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\MacrosCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
@@ -42,7 +102,17 @@
     </Bitmaps>
   </Commands>
   <KeyBindings>
-    <KeyBinding guid="guidMacroManagerCmdSet" id="MacroManagerCommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="0" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="MacroManagerCommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="M" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro1CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="1" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro2CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="2" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro3CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="3" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro4CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="4" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro5CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="5" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro6CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="6" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro7CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="7" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro8CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="8" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro9CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="9" />
+    <KeyBinding guid="guidMacroManagerCmdSet" id="Macro0CommandId" editor="guidVSStd97" key1="M" mod1="Control Shift" key2="0" />
   </KeyBindings>
   <Symbols>
     <GuidSymbol name="guidMacroManagerPkg" value="{b64d8a74-a3e4-41c7-b6f0-fa6ac20b832a}" />
@@ -50,6 +120,16 @@
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="EditorContextMenuGroup" value="0x1021" />
       <IDSymbol name="MacroManagerCommandId" value="0x0100" />
+      <IDSymbol name="Macro1CommandId" value="0x0200" />
+      <IDSymbol name="Macro2CommandId" value="0x0201" />
+      <IDSymbol name="Macro3CommandId" value="0x0202" />
+      <IDSymbol name="Macro4CommandId" value="0x0203" />
+      <IDSymbol name="Macro5CommandId" value="0x0204" />
+      <IDSymbol name="Macro6CommandId" value="0x0205" />
+      <IDSymbol name="Macro7CommandId" value="0x0206" />
+      <IDSymbol name="Macro8CommandId" value="0x0207" />
+      <IDSymbol name="Macro9CommandId" value="0x0208" />
+      <IDSymbol name="Macro0CommandId" value="0x0209" />
     </GuidSymbol>
     <GuidSymbol name="guidImages" value="{68c00bdc-fbee-4af0-b349-0847fed07741}">
       <IDSymbol name="bmpPic1" value="1" />
@@ -59,11 +139,9 @@
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
     </GuidSymbol>
-  
     <GuidSymbol value="{ae8b955d-367c-4ba4-a060-683fc39c2dfd}" name="guidPowerMacrosPackageCmdSet">
       <IDSymbol value="256" name="cmdidMacrosWindowCommand" />
     </GuidSymbol>
-  
     <GuidSymbol value="{4f70e9a7-acee-446f-bc4a-06452e1264d7}" name="guidImages1">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />

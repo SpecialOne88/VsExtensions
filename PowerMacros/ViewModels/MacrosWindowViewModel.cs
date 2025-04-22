@@ -1,4 +1,8 @@
-﻿using PowerMacros.Entities;
+﻿using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.TextManager.Interop;
+using PowerMacros.Entities;
+using PowerMacros.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PowerMacros.ViewModels
@@ -25,18 +30,22 @@ namespace PowerMacros.ViewModels
             }
         }
 
+        public RelayCommand ApplyCommand { get; }
         public RelayCommand EditCommand { get; }
         public RelayCommand DeleteCommand { get; }
         public RelayCommand MoveUpCommand { get; }
         public RelayCommand MoveDownCommand { get; }
+        public RelayCommand AddMacroCommand { get; }
 
 
         public MacrosWindowViewModel()
         {
+            ApplyCommand = new RelayCommand(ApplyMacro);
             EditCommand = new RelayCommand(EditMacro);
             DeleteCommand = new RelayCommand(DeleteMacro);
             MoveUpCommand = new RelayCommand(MoveMacroUp, CanMoveMacroUp);
             MoveDownCommand = new RelayCommand(MoveMacroDown, CanMoveMacroDown);
+            AddMacroCommand = new RelayCommand(AddNewMacro);
 
             LoadMacros();
         }
@@ -44,11 +53,29 @@ namespace PowerMacros.ViewModels
         private void LoadMacros()
         {
             MacrosList.Clear();
-            MacrosList.Add(new Macro { Name = "Macro1", Description = "Description1", MacroType = MacroType.Code, Code = "Code1" });
-            MacrosList.Add(new Macro { Name = "Macro2", Description = "Description2", MacroType = MacroType.Code, Code = "Code2" });
-            MacrosList.Add(new Macro { Name = "Macro3", Description = "Description3", MacroType = MacroType.Code, Code = "Code3" });
+            foreach (var item in MacroLoader.LoadMacrosFromSettings())
+            {
+                MacrosList.Add(item);
+            }
             UpdateMacroShortcut();
-            OnPropertyChanged(nameof(MacrosList));
+        }
+
+        private void ApplyMacro(object parameter)
+        {
+            if (parameter is Macro macro)
+            {
+                try
+                {
+                    if (macro.MacroType == MacroType.Code)
+                    {
+                        TextEditor.InsertTextInCurrentView(macro.Code);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to apply macro: {ex.Message}", "Error");
+                }
+            }
         }
 
         private void EditMacro(object parameter)
@@ -119,10 +146,24 @@ namespace PowerMacros.ViewModels
         {
             for (int i = 0; i < MacrosList.Count; i++)
             {
-                MacrosList[i].Shortcut = $"Shift+Ctrl+{i + 1}";
+                MacrosList[i].Shortcut = $"Shift+Ctrl+M, {i + 1}";
             }
-            MacrosList = new ObservableCollection<Macro>(MacrosList.Select(a => a));
             OnPropertyChanged(nameof(MacrosList));
+            MacroLoader.SaveMacrosToSettings(MacrosList.ToList());
+        }
+
+        private void AddNewMacro(object parameter)
+        {
+            var newMacro = new Macro
+            {
+                Name = "New Macro",
+                Description = "Description",
+                Code = "if (1 == 1)\n{\n\treturn 0;\n}\n",
+                MacroType = MacroType.Code,
+                Shortcut = $"Shift+Ctrl+M, {MacrosList.Count + 1}"
+            };
+            MacrosList.Add(newMacro);
+            UpdateMacroShortcut();
         }
     }
 }

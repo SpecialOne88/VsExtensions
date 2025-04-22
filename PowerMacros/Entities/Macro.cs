@@ -1,15 +1,83 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace PowerMacros.Entities
 {
-    public class Macro
+    public class Macro : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public MacroType MacroType { get; set; } = MacroType.Code;
-        public string Code { get; set; }
-        public string Shortcut { get; set; }
-        public List<MacroAction> Actions { get; set; } = new List<MacroAction>();
+        private string _name;
+        private string _description;
+        private MacroType _macroType = Entities.MacroType.Code;
+        private string _code;
+        private string _shortcut;
+        private List<MacroAction> _actions = new List<MacroAction>();
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                _description = value;
+                OnPropertyChanged(nameof(Description));
+            }
+        }
+
+        public MacroType MacroType
+        {
+            get => _macroType;
+            set
+            {
+                _macroType = value;
+                OnPropertyChanged(nameof(MacroType));
+            }
+        }
+
+        public string Code
+        {
+            get => _code;
+            set
+            {
+                _code = value;
+                OnPropertyChanged(nameof(Code));
+            }
+        }
+
+        public string Shortcut
+        {
+            get => _shortcut;
+            set
+            {
+                _shortcut = value;
+                OnPropertyChanged(nameof(Shortcut));
+            }
+        }
+
+        public List<MacroAction> Actions
+        {
+            get => _actions;
+            set
+            {
+                _actions = value;
+                OnPropertyChanged(nameof(Actions));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public override string ToString()
         {
