@@ -15,29 +15,74 @@
             <DataGrid ItemsSource="{Binding MacrosList, Mode=OneWay}"
                       SelectedItem="{Binding SelectedMacro}" CanUserAddRows="False" CanUserDeleteRows="False"
                       HorizontalAlignment="Stretch" AutoGenerateColumns="False" SelectionMode="Single" CanUserResizeRows="False"
-                      CanUserSortColumns="False">
+                      CanUserSortColumns="False" Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
+                      Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
+                      BorderBrush="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}"
+                      GridLinesVisibility="All"
+                      HorizontalGridLinesBrush="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}"
+                      VerticalGridLinesBrush="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}" />
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarTextActiveKey}}" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}" />
+                        <Setter Property="Padding" Value="2" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}" />
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}" />
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True"></DataGridTextColumn>
-                    <DataGridTextColumn Header="MacroType" Binding="{Binding MacroType}" IsReadOnly="True"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Code" Binding="{Binding Code}" IsReadOnly="True"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Shortcut" Binding="{Binding Shortcut}" IsReadOnly="True"></DataGridTextColumn>
-                    <DataGridTemplateColumn Header="Actions">
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="20*"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True" Width="20*"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Type" Binding="{Binding MacroType}" IsReadOnly="True" Width="10*"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Code" Binding="{Binding Preview}" IsReadOnly="True" Width="30*"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Shortcut" Binding="{Binding Shortcut}" IsReadOnly="True" Width="10*" MinWidth="100"></DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Actions" Width="150">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="✔" Width="20" Height="20" Command="{Binding DataContext.ApplyCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Execute Macro"/>
-                                    <Button Content="✎" Width="20" Height="20" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Edit Macro"/>
-                                    <Button Content="❌" Width="20" Height="20" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Delete Macro"/>
-                                    <Button Content="⮝" Width="20" Height="20" Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Move Up"/>
-                                    <Button Content="⮟" Width="20" Height="20" Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2" ToolTip="Move Down"/>
+                                    <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                                            Content="✔" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                            Command="{Binding DataContext.ApplyCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}" Margin="2" ToolTip="Execute Macro" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                                            Padding="0"/>
+                                    <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                                            Content="✎" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                            Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}" Margin="2" ToolTip="Edit Macro" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                                            Padding="0"/>
+                                    <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                                            Content="❌" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}" Margin="2" ToolTip="Delete Macro" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                                            Padding="0"/>
+                                    <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                                            Content="⮝" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                            Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}" Margin="2" ToolTip="Move Up" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                                            Padding="0"/>
+                                    <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                                            Content="⮟" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                            Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}" Margin="2" ToolTip="Move Down" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                                            Padding="0"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Content="Click me!" Command="{Binding AddMacroCommand}" Width="120" Height="80" Name="button1"/>
+            <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                    Content="Click me!" Command="{Binding AddMacroCommand}" Width="120" Height="80" Name="button1"/>
         </StackPanel>
     </Grid>
 </UserControl>

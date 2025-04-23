@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PowerMacros.Entities
@@ -69,6 +70,35 @@ namespace PowerMacros.Entities
             {
                 _actions = value;
                 OnPropertyChanged(nameof(Actions));
+            }
+        }
+
+        public string Preview
+        {
+            get
+            {
+                if (MacroType == MacroType.Code)
+                {
+                    if (string.IsNullOrWhiteSpace(Code))
+                    {
+                        return "N/A";
+                    }
+                    var lines = Code.Split(new[] { '\r', '\n' });
+                    var preview = lines[0];
+                    if (preview.Length > 50)
+                    {
+                        preview = preview.Substring(0, 50) + "...";
+                    }
+                    else if (lines.Length > 1)
+                    {
+                        preview += "...";
+                    }
+                    return preview;
+                }
+                else
+                {
+                    return string.Join(", ", Actions);
+                }
             }
         }
 
