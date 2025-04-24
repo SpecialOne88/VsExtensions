@@ -28,6 +28,8 @@ namespace PowerMacros.Utils
 
         public static void InsertTextInCurrentView(string text)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             var textView = GetActiveTextView();
             if (textView != null)
             {

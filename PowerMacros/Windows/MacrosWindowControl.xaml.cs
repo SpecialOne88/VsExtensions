@@ -1,8 +1,4 @@
-﻿using PowerMacros.Entities;
-using PowerMacros.ViewModels;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows;
+﻿using PowerMacros.ViewModels;
 using System.Windows.Controls;
 
 namespace PowerMacros.Windows

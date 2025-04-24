@@ -11,7 +11,20 @@
              Name="MyToolWindow">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <TextBlock Margin="10" HorizontalAlignment="Center">MacrosWindow</TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 5">
+                <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                        Content="+" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding AddMacroCommand}" Margin="2" ToolTip="Create new macro" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                        Padding="0"/>
+                <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                        Content="↥" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding ImportCommand}" Margin="2" ToolTip="Import from file" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                        Padding="0"/>
+                <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                        Content="🖫" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding ExportCommand}" Margin="2" ToolTip="Export to file" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
+                        Padding="0"/>           
+            </StackPanel>
             <DataGrid ItemsSource="{Binding MacrosList, Mode=OneWay}"
                       SelectedItem="{Binding SelectedMacro}" CanUserAddRows="False" CanUserDeleteRows="False"
                       HorizontalAlignment="Stretch" AutoGenerateColumns="False" SelectionMode="Single" CanUserResizeRows="False"
@@ -81,8 +94,6 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
-                    Content="Click me!" Command="{Binding AddMacroCommand}" Width="120" Height="80" Name="button1"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -1,17 +1,10 @@
-﻿using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.TextManager.Interop;
-using PowerMacros.Entities;
+﻿using PowerMacros.Entities;
 using PowerMacros.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace PowerMacros.ViewModels
 {
@@ -36,6 +29,8 @@ namespace PowerMacros.ViewModels
         public RelayCommand MoveUpCommand { get; }
         public RelayCommand MoveDownCommand { get; }
         public RelayCommand AddMacroCommand { get; }
+        public RelayCommand ImportCommand { get; }
+        public RelayCommand ExportCommand { get; }
 
 
         public MacrosWindowViewModel()
@@ -46,6 +41,8 @@ namespace PowerMacros.ViewModels
             MoveUpCommand = new RelayCommand(MoveMacroUp, CanMoveMacroUp);
             MoveDownCommand = new RelayCommand(MoveMacroDown, CanMoveMacroDown);
             AddMacroCommand = new RelayCommand(AddNewMacro);
+            ImportCommand = new RelayCommand(ImportMacros);
+            ExportCommand = new RelayCommand(ExportMacros);
 
             LoadMacros();
         }
@@ -154,16 +151,97 @@ namespace PowerMacros.ViewModels
 
         private void AddNewMacro(object parameter)
         {
-            var newMacro = new Macro
+            // Open a new window to create a new macro
+        }
+
+        private void ImportMacros(object parameter)
+        {
+            try
             {
-                Name = "New Macro",
-                Description = "Description",
-                Code = "if (1 == 1)\n{\n\treturn 0;\n}\n",
-                MacroType = MacroType.Code,
-                Shortcut = $"Shift+Ctrl+M, {MacrosList.Count + 1}"
-            };
-            MacrosList.Add(newMacro);
-            UpdateMacroShortcut();
+                var loadFileDialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Title = "Import Macros",
+                    Filter = "JSON Files (*.json)|*.json",
+                    DefaultExt = "json",
+                    Multiselect = false,
+                    CheckFileExists = true,
+                    CheckPathExists = true,
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                };
+
+                // Show the dialog and check if the user selected a file
+                if (loadFileDialog.ShowDialog() == true)
+                {
+                    if (MacrosList.Count > 0)
+                    {
+                        if (MessageBox.Show($"Are you sure you want to replace existing macros?", "Import Macros", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        {
+                            return;
+                        }
+                    }
+
+                    var filePath = loadFileDialog.FileName;
+                    var macrosJson = System.IO.File.ReadAllText(filePath);
+
+                    if (string.IsNullOrWhiteSpace(macrosJson))
+                    {
+                        MessageBox.Show("The selected file is empty or invalid.", "Import Macros", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    var importedMacros = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Macro>>(macrosJson);
+                    if (importedMacros != null)
+                    {
+                        MacrosList.Clear();
+                        foreach (var macro in importedMacros)
+                        {
+                            MacrosList.Add(macro);
+                        }
+                        UpdateMacroShortcut();
+                        MessageBox.Show("Macros imported successfully!", "Import Macros", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to import macros. Please check the file format.", "Import Macros", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occurred while importing macros. Please check the file format.", "Import Macros", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExportMacros(object parameter)
+        {
+            try
+            {
+                if (MacrosList.Count == 0)
+                {
+                    MessageBox.Show("No macros to export.", "Export Macros", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Title = "Export Macros",
+                    Filter = "JSON Files (*.json)|*.json",
+                    DefaultExt = "json",
+                    FileName = "Macros.json"
+                };
+
+                // Show the dialog and check if the user selected a file
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    var macrosJson = Newtonsoft.Json.JsonConvert.SerializeObject(MacrosList, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(saveFileDialog.FileName, macrosJson);
+                    MessageBox.Show("Macros exported successfully!", "Export Macros", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while exporting macros: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace PowerMacros {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.13.0.0")]
     internal sealed partial class UserSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static UserSettings defaultInstance = ((UserSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new UserSettings())));
@@ -25,7 +25,9 @@ namespace PowerMacros {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[{\"Name\":\"SampleMacro\",\"Description\":\"Sample Description\",\"MacroType\":0,\"Code\":\"i" +
+            "f (1 == 1)\\n{\\n\\treturn 0;\\n}\\n\",\"Shortcut\":\"Shift+Ctrl+M, 1\",\"Actions\":[],\"Prev" +
+            "iew\":\"if (1 == 1)...\"}]")]
         public string Macros {
             get {
                 return ((string)(this["Macros"]));

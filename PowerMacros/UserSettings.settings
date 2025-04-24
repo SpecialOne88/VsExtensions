@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Macros" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">[{"Name":"SampleMacro","Description":"Sample Description","MacroType":0,"Code":"if (1 == 1)\n{\n\treturn 0;\n}\n","Shortcut":"Shift+Ctrl+M, 1","Actions":[],"Preview":"if (1 == 1)..."}]</Value>
     </Setting>
   </Settings>
 </SettingsFile>
