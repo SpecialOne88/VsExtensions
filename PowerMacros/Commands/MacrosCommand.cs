@@ -81,6 +81,8 @@ namespace PowerMacros.Commands
 
         private void ExecuteMacro(int index)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var macros = MacroLoader.LoadMacrosFromSettings();
 
             if (macros == null || macros.Count == 0)

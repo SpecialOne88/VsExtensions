@@ -23,6 +23,110 @@ namespace PowerMacros.ViewModels
             }
         }
 
+        private Visibility _listVisibility;
+        public Visibility ListVisibility
+        {
+            get 
+            { 
+                return _listVisibility;
+            }
+            set 
+            { 
+                _listVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility _editorVisibility;
+        public Visibility EditorVisibility
+        {
+            get
+            {
+                return _editorVisibility;
+            }
+            set
+            {
+                _editorVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _editName;
+        public string EditName
+        {
+            get 
+            { 
+                return _editName;
+            }
+            set 
+            { 
+                _editName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _editDescription;
+        public string EditDescription
+        {
+            get
+            {
+                return _editDescription;
+            }
+            set
+            {
+                _editDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<string> MacroTypes { get; } = new ObservableCollection<string>
+        {
+            "Code",
+            "Action"
+        };
+
+        private string _editMacroType;
+        public string EditMacroType
+        {
+            get
+            {
+                return _editMacroType;
+            }
+            set
+            {
+                _editMacroType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _editMacroCode;
+        public string EditMacroCode
+        {
+            get
+            {
+                return _editMacroCode;
+            }
+            set
+            {
+                _editMacroCode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _editMacroOriginalName;
+        public string EditMacroOriginalName
+        {
+            get
+            {
+                return _editMacroOriginalName;
+            }
+            set
+            {
+                _editMacroOriginalName = value;
+                OnPropertyChanged();
+            }
+        }
+
         public RelayCommand ApplyCommand { get; }
         public RelayCommand EditCommand { get; }
         public RelayCommand DeleteCommand { get; }
@@ -31,7 +135,8 @@ namespace PowerMacros.ViewModels
         public RelayCommand AddMacroCommand { get; }
         public RelayCommand ImportCommand { get; }
         public RelayCommand ExportCommand { get; }
-
+        public RelayCommand EditMacroSaveCommand { get; }
+        public RelayCommand EditMacroCancelCommand { get; }
 
         public MacrosWindowViewModel()
         {
@@ -43,8 +148,13 @@ namespace PowerMacros.ViewModels
             AddMacroCommand = new RelayCommand(AddNewMacro);
             ImportCommand = new RelayCommand(ImportMacros);
             ExportCommand = new RelayCommand(ExportMacros);
+            EditMacroSaveCommand = new RelayCommand(SaveEditMacro, CanSaveEditMacro);
+            EditMacroCancelCommand = new RelayCommand(CancelEditMacro);
 
             LoadMacros();
+
+            ListVisibility = Visibility.Visible;
+            EditorVisibility = Visibility.Hidden;
         }
 
         private void LoadMacros()
@@ -54,7 +164,7 @@ namespace PowerMacros.ViewModels
             {
                 MacrosList.Add(item);
             }
-            UpdateMacroShortcut();
+            UpdateMacroShortcutAndSave();
         }
 
         private void ApplyMacro(object parameter)
@@ -79,7 +189,14 @@ namespace PowerMacros.ViewModels
         {
             if (parameter is Macro macro)
             {
-                MessageBox.Show($"Editing macro: {macro.ToString()}", "Edit Macro");
+                EditName = macro.Name;
+                EditDescription = macro.Description;
+                EditMacroType = macro.MacroType.ToString();
+                EditMacroCode = macro.Code;
+                EditMacroOriginalName = macro.Name;
+
+                ListVisibility = Visibility.Hidden;
+                EditorVisibility = Visibility.Visible;
             }
         }
 
@@ -90,7 +207,7 @@ namespace PowerMacros.ViewModels
                 if (MessageBox.Show($"Are you sure you want to delete {macro.Name}?", "Delete Macro", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     MacrosList.Remove(macro);
-                    UpdateMacroShortcut();
+                    UpdateMacroShortcutAndSave();
                 }
             }
         }
@@ -104,7 +221,7 @@ namespace PowerMacros.ViewModels
                 {
                     MacrosList.Move(index, index - 1);
                 }
-                UpdateMacroShortcut();
+                UpdateMacroShortcutAndSave();
             }
         }
 
@@ -126,7 +243,7 @@ namespace PowerMacros.ViewModels
                 {
                     MacrosList.Move(index, index + 1);
                 }
-                UpdateMacroShortcut();
+                UpdateMacroShortcutAndSave();
             }
         }
 
@@ -139,7 +256,7 @@ namespace PowerMacros.ViewModels
             return false;
         }
 
-        private void UpdateMacroShortcut()
+        private void UpdateMacroShortcutAndSave()
         {
             for (int i = 0; i < MacrosList.Count; i++)
             {
@@ -151,7 +268,15 @@ namespace PowerMacros.ViewModels
 
         private void AddNewMacro(object parameter)
         {
+            EditDescription = string.Empty;
+            EditMacroCode = string.Empty;
+            EditMacroType = "Code";
+            EditName = string.Empty;
+            EditMacroOriginalName = null;
+
             // Open a new window to create a new macro
+            ListVisibility = Visibility.Hidden;
+            EditorVisibility = Visibility.Visible;
         }
 
         private void ImportMacros(object parameter)
@@ -197,7 +322,7 @@ namespace PowerMacros.ViewModels
                         {
                             MacrosList.Add(macro);
                         }
-                        UpdateMacroShortcut();
+                        UpdateMacroShortcutAndSave();
                         MessageBox.Show("Macros imported successfully!", "Import Macros", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
@@ -242,6 +367,88 @@ namespace PowerMacros.ViewModels
             {
                 MessageBox.Show($"An error occurred while exporting macros: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void SaveEditMacro(object parameter)
+        {
+            if (EditName.Contains(" "))
+            {
+                MessageBox.Show("Macro name cannot contain spaces.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (EditMacroOriginalName == null &&
+                MacrosList.FirstOrDefault(x => x.Name.Equals(EditName, StringComparison.InvariantCultureIgnoreCase)) != null)
+            {
+                MessageBox.Show("Macro with this name already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (EditMacroOriginalName != null &&
+                !EditName.Equals(EditMacroOriginalName, StringComparison.InvariantCultureIgnoreCase) &&
+                MacrosList.FirstOrDefault(x => x.Name.Equals(EditName, StringComparison.InvariantCultureIgnoreCase)) != null)
+            {
+                MessageBox.Show("Macro with this name already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (EditMacroType.Equals("Code") && string.IsNullOrWhiteSpace(EditMacroCode))
+            {
+                MessageBox.Show("Code cannot be empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (EditMacroOriginalName != null)
+            {
+                var macro = MacrosList.FirstOrDefault(x => x.Name.Equals(EditMacroOriginalName, StringComparison.InvariantCultureIgnoreCase));
+                if (macro != null)
+                {
+                    macro.Name = EditName;
+                    macro.Description = EditDescription;
+                    macro.MacroType = Enum.TryParse<MacroType>(EditMacroType, out MacroType value) ? value : MacroType.Code;
+                    macro.Code = EditMacroCode;
+                }
+            }
+            else
+            {
+                var newMacro = new Macro
+                {
+                    Name = EditName,
+                    Description = EditDescription,
+                    MacroType = Enum.TryParse<MacroType>(EditMacroType, out MacroType value) ? value : MacroType.Code,
+                    Code = EditMacroCode
+                };
+                MacrosList.Add(newMacro);
+            }
+
+            UpdateMacroShortcutAndSave();
+            ListVisibility = Visibility.Visible;
+            EditorVisibility = Visibility.Hidden;
+            EditDescription = string.Empty;
+            EditMacroCode = string.Empty;
+            EditMacroType = "Code";
+            EditName = string.Empty;
+            EditMacroOriginalName = null;
+            MessageBox.Show("Macro saved successfully!", "Save Macro", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private bool CanSaveEditMacro(object parameter)
+        {
+            return !string.IsNullOrWhiteSpace(EditName) &&
+                !string.IsNullOrWhiteSpace(EditMacroType) &&
+                !string.IsNullOrWhiteSpace(EditDescription);
+        }
+
+        private void CancelEditMacro(object parameter)
+        {
+            EditDescription = string.Empty;
+            EditMacroCode = string.Empty;
+            EditMacroType = "Code";
+            EditName = string.Empty;
+            EditMacroOriginalName = null;
+
+            ListVisibility = Visibility.Visible;
+            EditorVisibility = Visibility.Hidden;
         }
     }
 }

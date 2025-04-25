@@ -10,7 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Visibility="{Binding ListVisibility}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 5">
                 <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
                         Content="+" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
@@ -23,7 +23,7 @@
                 <Button Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
                         Content="🖫" Width="25" Height="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                         Command="{Binding ExportCommand}" Margin="2" ToolTip="Export to file" MinWidth="25" MinHeight="25" MaxHeight="25" MaxWidth="25"
-                        Padding="0"/>           
+                        Padding="0"/>
             </StackPanel>
             <DataGrid ItemsSource="{Binding MacrosList, Mode=OneWay}"
                       SelectedItem="{Binding SelectedMacro}" CanUserAddRows="False" CanUserDeleteRows="False"
@@ -94,6 +94,43 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+        </StackPanel>
+        <StackPanel Visibility="{Binding EditorVisibility}">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Name -->
+                <TextBlock Text="Name:" VerticalAlignment="Center" Margin="5" />
+                <TextBox Grid.Column="1" x:Name="NameTextBox" Margin="5" Text="{Binding EditName}" />
+
+                <!-- Description -->
+                <TextBlock Text="Description:" Grid.Row="1" VerticalAlignment="Center" Margin="5" />
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="DescriptionTextBox" Margin="5" Text="{Binding EditDescription}" />
+
+                <!-- Macro Type -->
+                <TextBlock Text="Macro Type:" Grid.Row="2" VerticalAlignment="Center" Margin="5" />
+                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="MacroTypeComboBox" Margin="5" ItemsSource="{Binding MacroTypes}" SelectedValue="{Binding EditMacroType}">                </ComboBox>
+
+                <!-- Code -->
+                <TextBlock Text="Code:" Grid.Row="3" VerticalAlignment="Top" Margin="5" />
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="CodeTextBox" Margin="5" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding EditMacroCode}" />
+
+                <!-- Buttons -->
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                    <Button Content="Save" Width="75" Margin="5" Command="{Binding EditMacroSaveCommand}" />
+                    <Button Content="Cancel" Width="75" Margin="5" Command="{Binding EditMacroCancelCommand}" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
     </Grid>
 </UserControl>
