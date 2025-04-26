@@ -3,10 +3,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using PowerMacros.Utils;
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace PowerMacros.Commands

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PowerMacros.Entities
@@ -7,12 +6,6 @@ namespace PowerMacros.Entities
     public class Macro : INotifyPropertyChanged
     {
         private string _name;
-        private string _description;
-        private MacroType _macroType = Entities.MacroType.Code;
-        private string _code;
-        private string _shortcut;
-        private List<MacroAction> _actions = new List<MacroAction>();
-
         public string Name
         {
             get => _name;
@@ -23,6 +16,7 @@ namespace PowerMacros.Entities
             }
         }
 
+        private string _description;
         public string Description
         {
             get => _description;
@@ -33,6 +27,7 @@ namespace PowerMacros.Entities
             }
         }
 
+        private MacroType _macroType = Entities.MacroType.Code;
         public MacroType MacroType
         {
             get => _macroType;
@@ -43,6 +38,7 @@ namespace PowerMacros.Entities
             }
         }
 
+        private string _code;
         public string Code
         {
             get => _code;
@@ -53,6 +49,7 @@ namespace PowerMacros.Entities
             }
         }
 
+        private string _shortcut;
         public string Shortcut
         {
             get => _shortcut;
@@ -63,6 +60,7 @@ namespace PowerMacros.Entities
             }
         }
 
+        private List<MacroAction> _actions = new List<MacroAction>();
         public List<MacroAction> Actions
         {
             get => _actions;
@@ -73,16 +71,30 @@ namespace PowerMacros.Entities
             }
         }
 
+        private string _preview;
         public string Preview
         {
-            get
+            get 
+            { 
+                return _preview;
+            }
+            set 
             {
-                if (MacroType == MacroType.Code)
+                _preview = value;
+                OnPropertyChanged(nameof(Preview));
+            }
+        }
+
+        public void UpdatePreview()
+        {
+            if (MacroType == MacroType.Code)
+            {
+                if (string.IsNullOrWhiteSpace(Code))
                 {
-                    if (string.IsNullOrWhiteSpace(Code))
-                    {
-                        return "N/A";
-                    }
+                    Preview = "N/A";
+                }
+                else
+                {
                     var lines = Code.Split(new[] { '\r', '\n' });
                     var preview = lines[0];
                     if (preview.Length > 50)
@@ -93,12 +105,12 @@ namespace PowerMacros.Entities
                     {
                         preview += "...";
                     }
-                    return preview;
+                    Preview = preview;
                 }
-                else
-                {
-                    return string.Join(", ", Actions);
-                }
+            }
+            else
+            {
+                Preview = string.Join(", ", Actions);
             }
         }
 

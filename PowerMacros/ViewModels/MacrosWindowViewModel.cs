@@ -261,6 +261,7 @@ namespace PowerMacros.ViewModels
             for (int i = 0; i < MacrosList.Count; i++)
             {
                 MacrosList[i].Shortcut = $"Shift+Ctrl+M, {i + 1}";
+                MacrosList[i].UpdatePreview();
             }
             OnPropertyChanged(nameof(MacrosList));
             MacroLoader.SaveMacrosToSettings(MacrosList.ToList());
