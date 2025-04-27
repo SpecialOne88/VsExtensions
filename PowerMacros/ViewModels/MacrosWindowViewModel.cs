@@ -15,7 +15,7 @@ namespace PowerMacros.ViewModels
         private Macro _selectedMacro;
         public Macro SelectedMacro
         {
-            get { return _selectedMacro; }
+            get => _selectedMacro;
             set
             {
                 _selectedMacro = value;
@@ -26,10 +26,7 @@ namespace PowerMacros.ViewModels
         private Visibility _listVisibility;
         public Visibility ListVisibility
         {
-            get 
-            { 
-                return _listVisibility;
-            }
+            get => _listVisibility;
             set 
             { 
                 _listVisibility = value;
@@ -40,10 +37,7 @@ namespace PowerMacros.ViewModels
         private Visibility _editorVisibility;
         public Visibility EditorVisibility
         {
-            get
-            {
-                return _editorVisibility;
-            }
+            get => _editorVisibility;
             set
             {
                 _editorVisibility = value;
@@ -54,10 +48,7 @@ namespace PowerMacros.ViewModels
         private string _editName;
         public string EditName
         {
-            get 
-            { 
-                return _editName;
-            }
+            get => _editName;
             set 
             { 
                 _editName = value;
@@ -68,10 +59,7 @@ namespace PowerMacros.ViewModels
         private string _editDescription;
         public string EditDescription
         {
-            get
-            {
-                return _editDescription;
-            }
+            get => _editDescription;
             set
             {
                 _editDescription = value;
@@ -88,10 +76,7 @@ namespace PowerMacros.ViewModels
         private string _editMacroType;
         public string EditMacroType
         {
-            get
-            {
-                return _editMacroType;
-            }
+            get => _editMacroType;
             set
             {
                 _editMacroType = value;
@@ -102,10 +87,7 @@ namespace PowerMacros.ViewModels
         private string _editMacroCode;
         public string EditMacroCode
         {
-            get
-            {
-                return _editMacroCode;
-            }
+            get => _editMacroCode;
             set
             {
                 _editMacroCode = value;
@@ -116,10 +98,7 @@ namespace PowerMacros.ViewModels
         private string _editMacroOriginalName;
         public string EditMacroOriginalName
         {
-            get
-            {
-                return _editMacroOriginalName;
-            }
+            get => _editMacroOriginalName;
             set
             {
                 _editMacroOriginalName = value;
@@ -265,6 +244,7 @@ namespace PowerMacros.ViewModels
             }
             OnPropertyChanged(nameof(MacrosList));
             MacroLoader.SaveMacrosToSettings(MacrosList.ToList());
+            MessageManager.Instance.Send(MacrosList.ToList());
         }
 
         private void AddNewMacro(object parameter)

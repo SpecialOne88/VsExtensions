@@ -25,6 +25,8 @@ namespace PowerMacros.Commands
         public const int Macro9CommandId = 0x0208;
         public const int Macro0CommandId = 0x0209;
 
+        public const int QuickMacroCommandId = 0x020A;
+
         private MacrosCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
@@ -44,6 +46,10 @@ namespace PowerMacros.Commands
             commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(8); }, new CommandID(CommandSet, Macro8CommandId)));
             commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(9); }, new CommandID(CommandSet, Macro9CommandId)));
             commandService.AddCommand(new MenuCommand((s, e) => { ExecuteMacro(0); }, new CommandID(CommandSet, Macro0CommandId)));
+
+            var quickMacro = new CommandID(CommandSet, QuickMacroCommandId);
+            var quickMenu = new MenuCommand(this.ExecuteQuickMacro, quickMacro);
+            commandService.AddCommand(quickMenu);
         }
 
         public static MacrosCommand Instance
@@ -97,6 +103,30 @@ namespace PowerMacros.Commands
             {
                 TextEditor.InsertTextInCurrentView(selectedMacro.Code);
             }
+        }
+
+        private void ExecuteQuickMacro(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var window = this.package.FindToolWindow(typeof(PowerMacros.Windows.QuickMacro), 0, true);
+            if (window == null || (null == window.Frame))
+            {
+                throw new NotSupportedException("Cannot create window");
+            }
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            const int width = 250;
+            const int height = 100;
+            windowFrame.SetFramePos(
+                VSSETFRAMEPOS.SFP_fSize,
+                Guid.Empty,
+                0,
+                0,
+                width,
+                height
+            );
+            windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_FloatOnly);
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
     }
 }

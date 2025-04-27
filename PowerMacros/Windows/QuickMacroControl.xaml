@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="PowerMacros.Windows.QuickMacroControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="250"
+             Name="QuickMacroWindow" Width="250" Height="100">
+    <StackPanel Orientation="Vertical">
+        <TextBlock Margin="10 10 0 0" HorizontalAlignment="Left" FontSize="12">Quick Macro</TextBlock>
+        <ComboBox Margin="10 5" IsEditable="True" IsTextSearchEnabled="True"
+             IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding MacroSearchText, Mode=TwoWay}"
+             ItemsSource="{Binding FilteredMacros}"
+             Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ComboBoxStyleKey}}">
+            <ComboBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"></KeyBinding>
+            </ComboBox.InputBindings>
+        </ComboBox>
+        <Grid Margin="10 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <CheckBox Style="{DynamicResource {x:Static vsshell:VsResourceKeys.CheckBoxStyleKey}}"
+                      Content="Close on execute" VerticalContentAlignment="Center"
+                      IsChecked="{Binding ShouldClose, Mode=TwoWay}"/>
+            <Button Grid.Column="1" Command="{Binding EnterKeyCommand}"
+                    Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}">Execute</Button>
+        </Grid>
+    </StackPanel>
+</UserControl>

@@ -74,11 +74,8 @@ namespace PowerMacros.Entities
         private string _preview;
         public string Preview
         {
-            get 
-            { 
-                return _preview;
-            }
-            set 
+            get => _preview;
+            set
             {
                 _preview = value;
                 OnPropertyChanged(nameof(Preview));
