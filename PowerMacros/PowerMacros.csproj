@@ -56,6 +56,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>UserSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utils\InputUtils.cs" />
     <Compile Include="Utils\MacroLoader.cs" />
     <Compile Include="Utils\MessageManager.cs" />
     <Compile Include="Utils\TextEditor.cs" />

@@ -3,6 +3,7 @@ using PowerMacros.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -27,8 +28,8 @@ namespace PowerMacros.ViewModels
         public Visibility ListVisibility
         {
             get => _listVisibility;
-            set 
-            { 
+            set
+            {
                 _listVisibility = value;
                 OnPropertyChanged();
             }
@@ -49,8 +50,8 @@ namespace PowerMacros.ViewModels
         public string EditName
         {
             get => _editName;
-            set 
-            { 
+            set
+            {
                 _editName = value;
                 OnPropertyChanged();
             }
@@ -63,6 +64,39 @@ namespace PowerMacros.ViewModels
             set
             {
                 _editDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility _codeVisibility;
+        public Visibility CodeVisibility
+        {
+            get => _codeVisibility;
+            set
+            {
+                _codeVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility _recorderVisibility;
+        public Visibility RecorderVisibility
+        {
+            get => _recorderVisibility;
+            set
+            {
+                _recorderVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _macroActionsText;
+        public string MacroActionsText
+        {
+            get => _macroActionsText;
+            set
+            {
+                _macroActionsText = value;
                 OnPropertyChanged();
             }
         }
@@ -81,6 +115,7 @@ namespace PowerMacros.ViewModels
             {
                 _editMacroType = value;
                 OnPropertyChanged();
+                MacroTypeVisibility();
             }
         }
 
@@ -106,6 +141,39 @@ namespace PowerMacros.ViewModels
             }
         }
 
+        private Visibility _recordButtonVisibility = Visibility.Collapsed;
+        public Visibility RecordButtonVisibility
+        {
+            get => _recordButtonVisibility;
+            set
+            {
+                _recordButtonVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility _stopRecordButtonVisibility = Visibility.Collapsed;
+        public Visibility StopRecordButtonVisibility
+        {
+            get => _stopRecordButtonVisibility;
+            set
+            {
+                _stopRecordButtonVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isEditEnabled = true;
+        public bool IsEditEnabled
+        {
+            get => _isEditEnabled;
+            set
+            {
+                _isEditEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
         public RelayCommand ApplyCommand { get; }
         public RelayCommand EditCommand { get; }
         public RelayCommand DeleteCommand { get; }
@@ -116,6 +184,14 @@ namespace PowerMacros.ViewModels
         public RelayCommand ExportCommand { get; }
         public RelayCommand EditMacroSaveCommand { get; }
         public RelayCommand EditMacroCancelCommand { get; }
+        public RelayCommand StartRecordingCommand { get; }
+        public RelayCommand StopRecordingCommand { get; }
+
+        private List<MacroAction> _recordedActions = new List<MacroAction>();
+        private bool _isRecording = false;
+        private long _recordingStartTime = 0;
+
+        MacroKeyboardHook _macroKeyboardHook = null;
 
         public MacrosWindowViewModel()
         {
@@ -128,12 +204,16 @@ namespace PowerMacros.ViewModels
             ImportCommand = new RelayCommand(ImportMacros);
             ExportCommand = new RelayCommand(ExportMacros);
             EditMacroSaveCommand = new RelayCommand(SaveEditMacro, CanSaveEditMacro);
-            EditMacroCancelCommand = new RelayCommand(CancelEditMacro);
+            EditMacroCancelCommand = new RelayCommand(CancelEditMacro, CanEditMacro);
+            StartRecordingCommand = new RelayCommand(StartRecording);
+            StopRecordingCommand = new RelayCommand(StopRecording);
 
             LoadMacros();
 
             ListVisibility = Visibility.Visible;
             EditorVisibility = Visibility.Hidden;
+
+            MacroTypeVisibility();
         }
 
         private void LoadMacros()
@@ -146,7 +226,7 @@ namespace PowerMacros.ViewModels
             UpdateMacroShortcutAndSave();
         }
 
-        private void ApplyMacro(object parameter)
+        private async void ApplyMacro(object parameter)
         {
             if (parameter is Macro macro)
             {
@@ -154,7 +234,11 @@ namespace PowerMacros.ViewModels
                 {
                     if (macro.MacroType == MacroType.Code)
                     {
-                        TextEditor.InsertTextInCurrentView(macro.Code);
+                        Utils.TextEditor.InsertTextInCurrentView(macro.Code);
+                    }
+                    else if (macro.MacroType == MacroType.Action)
+                    {
+                        await InputSimulator.PlayRecordedMacro(macro.Actions);
                     }
                 }
                 catch (Exception ex)
@@ -173,6 +257,7 @@ namespace PowerMacros.ViewModels
                 EditMacroType = macro.MacroType.ToString();
                 EditMacroCode = macro.Code;
                 EditMacroOriginalName = macro.Name;
+                _recordedActions = macro.Actions.Select(x => x).ToList();
 
                 ListVisibility = Visibility.Hidden;
                 EditorVisibility = Visibility.Visible;
@@ -255,7 +340,6 @@ namespace PowerMacros.ViewModels
             EditName = string.Empty;
             EditMacroOriginalName = null;
 
-            // Open a new window to create a new macro
             ListVisibility = Visibility.Hidden;
             EditorVisibility = Visibility.Visible;
         }
@@ -275,7 +359,6 @@ namespace PowerMacros.ViewModels
                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
                 };
 
-                // Show the dialog and check if the user selected a file
                 if (loadFileDialog.ShowDialog() == true)
                 {
                     if (MacrosList.Count > 0)
@@ -336,7 +419,6 @@ namespace PowerMacros.ViewModels
                     FileName = "Macros.json"
                 };
 
-                // Show the dialog and check if the user selected a file
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     var macrosJson = Newtonsoft.Json.JsonConvert.SerializeObject(MacrosList, Newtonsoft.Json.Formatting.Indented);
@@ -379,25 +461,35 @@ namespace PowerMacros.ViewModels
                 return;
             }
 
+            if (EditMacroType.Equals("Action") && _recordedActions.Count == 0)
+            {
+                MessageBox.Show("No actions recorded.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (EditMacroOriginalName != null)
             {
                 var macro = MacrosList.FirstOrDefault(x => x.Name.Equals(EditMacroOriginalName, StringComparison.InvariantCultureIgnoreCase));
+                var type = Enum.TryParse<MacroType>(EditMacroType, out MacroType value) ? value : MacroType.Code;
                 if (macro != null)
                 {
                     macro.Name = EditName;
                     macro.Description = EditDescription;
-                    macro.MacroType = Enum.TryParse<MacroType>(EditMacroType, out MacroType value) ? value : MacroType.Code;
-                    macro.Code = EditMacroCode;
+                    macro.MacroType = type;
+                    macro.Code = type == MacroType.Code ? EditMacroCode : string.Empty;
+                    macro.Actions = type == MacroType.Action ? _recordedActions : new List<MacroAction>();
                 }
             }
             else
             {
+                var type = Enum.TryParse<MacroType>(EditMacroType, out MacroType value) ? value : MacroType.Code;
                 var newMacro = new Macro
                 {
                     Name = EditName,
                     Description = EditDescription,
-                    MacroType = Enum.TryParse<MacroType>(EditMacroType, out MacroType value) ? value : MacroType.Code,
-                    Code = EditMacroCode
+                    MacroType = type,
+                    Code = type == MacroType.Code ? EditMacroCode : string.Empty,
+                    Actions = type == MacroType.Action ? _recordedActions : new List<MacroAction>()
                 };
                 MacrosList.Add(newMacro);
             }
@@ -417,7 +509,8 @@ namespace PowerMacros.ViewModels
         {
             return !string.IsNullOrWhiteSpace(EditName) &&
                 !string.IsNullOrWhiteSpace(EditMacroType) &&
-                !string.IsNullOrWhiteSpace(EditDescription);
+                !string.IsNullOrWhiteSpace(EditDescription) &&
+                IsEditEnabled;
         }
 
         private void CancelEditMacro(object parameter)
@@ -430,6 +523,99 @@ namespace PowerMacros.ViewModels
 
             ListVisibility = Visibility.Visible;
             EditorVisibility = Visibility.Hidden;
+        }
+
+        private void MacroTypeVisibility()
+        {
+            if (EditMacroType == "Code")
+            {
+                CodeVisibility = Visibility.Visible;
+                RecorderVisibility = Visibility.Hidden;
+                RecordButtonVisibility = Visibility.Collapsed;
+            }
+            else if (EditMacroType == "Action")
+            {
+                CodeVisibility = Visibility.Hidden;
+                RecorderVisibility = Visibility.Visible;
+                RecordButtonVisibility = Visibility.Visible;
+                if (SelectedMacro != null)
+                {
+                    MacroActionsText = Newtonsoft.Json.JsonConvert.SerializeObject(SelectedMacro.Actions, Newtonsoft.Json.Formatting.Indented);
+                }
+            }
+        }
+
+        private void StartRecording(object parameter)
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
+            RecordButtonVisibility = Visibility.Collapsed;
+            StopRecordButtonVisibility = Visibility.Visible;
+            IsEditEnabled = false;
+            _recordedActions = new List<MacroAction>();
+
+            _isRecording = true;
+            _recordingStartTime = Stopwatch.GetTimestamp();
+
+            _macroKeyboardHook = new MacroKeyboardHook();
+            _macroKeyboardHook.KeyDown += OnKeyDown;
+            _macroKeyboardHook.KeyUp += OnKeyUp;
+            _macroKeyboardHook.Install();
+        }
+
+        private void OnKeyDown(object sender, MacroKeyEventArgs e)
+        {
+            if (!_isRecording)
+            {
+                return;
+            }
+
+            _recordedActions.Add(new MacroAction
+            {
+                Type = MacroActionType.KeyDown,
+                KeyCode = e.KeyCode,
+                Modifiers = e.Modifiers,
+                Delay = TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _recordingStartTime).TotalMilliseconds
+            });
+            _recordingStartTime = Stopwatch.GetTimestamp();
+        }
+
+        private void OnKeyUp(object sender, MacroKeyEventArgs e)
+        {
+            if (!_isRecording)
+            {
+                return;
+            }
+
+            _recordedActions.Add(new MacroAction
+            {
+                Type = MacroActionType.KeyUp,
+                KeyCode = e.KeyCode,
+                Modifiers = e.Modifiers,
+                Delay = TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _recordingStartTime).TotalMilliseconds
+            });
+            _recordingStartTime = Stopwatch.GetTimestamp();
+        }
+
+        private void StopRecording(object parameter)
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
+            RecordButtonVisibility = Visibility.Visible;
+            StopRecordButtonVisibility = Visibility.Collapsed;
+            IsEditEnabled = true;
+            _isRecording = false;
+            _macroKeyboardHook.KeyDown -= OnKeyDown;
+            _macroKeyboardHook.KeyUp -= OnKeyUp;
+            _macroKeyboardHook.Uninstall();
+            _macroKeyboardHook = null;
+
+            MacroActionsText = Newtonsoft.Json.JsonConvert.SerializeObject(_recordedActions, Newtonsoft.Json.Formatting.Indented);
+        }
+
+        private bool CanEditMacro(object parameter)
+        {
+            return IsEditEnabled;
         }
     }
 }

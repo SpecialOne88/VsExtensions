@@ -112,28 +112,48 @@
                 <!-- Name -->
                 <TextBlock Text="Name:" VerticalAlignment="Center" Margin="5" />
                 <TextBox Grid.Column="1" x:Name="NameTextBox" Margin="5" Text="{Binding EditName}"
-                         Style="{DynamicResource {x:Static vsshell:VsResourceKeys.TextBoxStyleKey}}"/>
+                         Style="{DynamicResource {x:Static vsshell:VsResourceKeys.TextBoxStyleKey}}"
+                         IsEnabled="{Binding IsEditEnabled}"/>
 
                 <!-- Description -->
                 <TextBlock Text="Description:" Grid.Row="1" VerticalAlignment="Center" Margin="5" />
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="DescriptionTextBox" Margin="5" Text="{Binding EditDescription}"
-                         Style="{DynamicResource {x:Static vsshell:VsResourceKeys.TextBoxStyleKey}}"/>
+                         Style="{DynamicResource {x:Static vsshell:VsResourceKeys.TextBoxStyleKey}}"
+                         IsEnabled="{Binding IsEditEnabled}"/>
 
                 <!-- Macro Type -->
                 <TextBlock Text="Macro Type:" Grid.Row="2" VerticalAlignment="Center" Margin="5" />
                 <ComboBox Grid.Row="2" Grid.Column="1" x:Name="MacroTypeComboBox" Margin="5"
                           Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ComboBoxStyleKey}}"
-                          ItemsSource="{Binding MacroTypes}" SelectedValue="{Binding EditMacroType}"></ComboBox>
+                          ItemsSource="{Binding MacroTypes}" SelectedValue="{Binding EditMacroType}"
+                          IsEnabled="{Binding IsEditEnabled}"></ComboBox>
 
                 <!-- Code -->
-                <TextBlock Text="Code:" Grid.Row="3" VerticalAlignment="Top" Margin="5" />
+                <TextBlock Text="Code:" Grid.Row="3" VerticalAlignment="Top" Margin="5"
+                           Visibility="{Binding CodeVisibility}"/>
                 <TextBox Grid.Row="3" Grid.Column="1" x:Name="CodeTextBox" Margin="5" AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto" Text="{Binding EditMacroCode}"
                          MinLines="10" MaxLines="10" AcceptsTab="True"
-                         Style="{DynamicResource {x:Static vsshell:VsResourceKeys.TextBoxStyleKey}}"/>
+                         Style="{DynamicResource {x:Static vsshell:VsResourceKeys.TextBoxStyleKey}}"
+                         Visibility="{Binding CodeVisibility}" IsEnabled="{Binding IsEditEnabled}"/>
+
+                <!-- Actions -->
+                <TextBlock Text="Actions:" Grid.Row="3" VerticalAlignment="Top" Margin="5"
+                           Visibility="{Binding RecorderVisibility}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="ActionsTextBox" Margin="5" AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto" Text="{Binding MacroActionsText}"
+                         MinLines="10" MaxLines="10" AcceptsTab="True"
+                         Style="{DynamicResource {x:Static vsshell:VsResourceKeys.TextBoxStyleKey}}"
+                         Visibility="{Binding RecorderVisibility}" IsEnabled="{Binding IsEditEnabled}"/>
 
                 <!-- Buttons -->
                 <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                    <Button Content="Record" Width="75" Margin="5" Command="{Binding StartRecordingCommand}"
+                            Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                            Visibility="{Binding RecordButtonVisibility}"/>
+                    <Button Content="Stop" Width="75" Margin="5" Command="{Binding StopRecordingCommand}"
+                            Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"
+                            Visibility="{Binding StopRecordButtonVisibility}"/>
                     <Button Content="Save" Width="75" Margin="5" Command="{Binding EditMacroSaveCommand}"
                             Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}"/>
                     <Button Content="Cancel" Width="75" Margin="5" Command="{Binding EditMacroCancelCommand}"

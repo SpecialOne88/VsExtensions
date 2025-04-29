@@ -4,6 +4,7 @@ using PowerMacros.Utils;
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Windows;
 using Task = System.Threading.Tasks.Task;
 
 namespace PowerMacros.Commands
@@ -79,29 +80,50 @@ namespace PowerMacros.Commands
                 throw new NotSupportedException("Cannot create window");
             }
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            const int width = 700;
+            const int height = 350;
+            windowFrame.SetFramePos(
+                VSSETFRAMEPOS.SFP_fSize,
+                Guid.Empty,
+                0,
+                0,
+                width,
+                height
+            );
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
-        private void ExecuteMacro(int index)
+        private async void ExecuteMacro(int index)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var macros = MacroLoader.LoadMacrosFromSettings();
-
-            if (macros == null || macros.Count == 0)
+            try
             {
-                return;
+                var macros = MacroLoader.LoadMacrosFromSettings();
+
+                if (macros == null || macros.Count == 0)
+                {
+                    return;
+                }
+
+                var selectedMacro = macros.FirstOrDefault(x => x.Shortcut.Equals($"Shift+Ctrl+M, {index}"));
+                if (selectedMacro == null)
+                {
+                    return;
+                }
+
+                if (selectedMacro.MacroType == Entities.MacroType.Code)
+                {
+                    TextEditor.InsertTextInCurrentView(selectedMacro.Code);
+                }
+                else if (selectedMacro.MacroType == Entities.MacroType.Action)
+                {
+                    await InputSimulator.PlayRecordedMacro(selectedMacro.Actions);
+                }
             }
-
-            var selectedMacro = macros.FirstOrDefault(x => x.Shortcut.Equals($"Shift+Ctrl+M, {index}"));
-            if (selectedMacro == null)
+            catch (Exception)
             {
-                return;
-            }
-
-            if (selectedMacro.MacroType == Entities.MacroType.Code)
-            {
-                TextEditor.InsertTextInCurrentView(selectedMacro.Code);
+                MessageBox.Show("Failed to execute macro", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

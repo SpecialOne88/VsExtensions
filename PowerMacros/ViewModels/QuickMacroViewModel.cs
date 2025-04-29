@@ -67,30 +67,43 @@ namespace PowerMacros.ViewModels
             UpdateFilteredMacros();
         }
 
-        public void ExecuteMacroByName(object parameter)
+        public async void ExecuteMacroByName(object parameter)
         {
-            string macroName = MacroSearchText;
-            var macro = MacrosList.FirstOrDefault(m => m.Name.Equals(macroName, System.StringComparison.InvariantCultureIgnoreCase));
-            if (macro != null)
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            try
             {
-                // Execute the macro
-                if (macro.MacroType == MacroType.Code)
+                string macroName = MacroSearchText;
+                var macro = MacrosList.FirstOrDefault(m => m.Name.Equals(macroName, System.StringComparison.InvariantCultureIgnoreCase));
+                if (macro != null)
                 {
-                    TextEditor.InsertTextInCurrentView(macro.Code);
-                    if (ShouldClose)
+                    // Execute the macro
+                    if (macro.MacroType == MacroType.Code)
                     {
-                        CloseToolWindow();
+                        TextEditor.InsertTextInCurrentView(macro.Code);
+                        if (ShouldClose)
+                        {
+                            CloseToolWindow();
+                        }
+                    }
+                    else if (macro.MacroType == MacroType.Action)
+                    {
+                        if (ShouldClose)
+                        {
+                            CloseToolWindow();
+                        }
+                        await InputSimulator.PlayRecordedMacro(macro.Actions);
                     }
                 }
                 else
                 {
-                    MessageBox.Show($"Macro '{macroName}' executed.", "Quick Macro", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"Macro '{macroName}' not found.", "Quick Macro", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-            else
+            catch (System.Exception)
             {
-                MessageBox.Show($"Macro '{macroName}' not found.", "Quick Macro", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+                MessageBox.Show("Failed to execute macro", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }            
         }
 
         private void UpdateFilteredMacros()

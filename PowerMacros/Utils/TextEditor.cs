@@ -35,7 +35,7 @@ namespace PowerMacros.Utils
             }
         }
 
-        private static (Microsoft.VisualStudio.Text.Editor.ITextView, IVsTextView) GetActiveTextView()
+        public static (Microsoft.VisualStudio.Text.Editor.ITextView, IVsTextView) GetActiveTextView()
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 

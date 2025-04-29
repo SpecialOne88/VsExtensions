@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace PowerMacros.Entities
 {
@@ -107,7 +108,7 @@ namespace PowerMacros.Entities
             }
             else
             {
-                Preview = string.Join(", ", Actions);
+                Preview = $"Actions: {Actions.Count}";
             }
         }
 
@@ -132,8 +133,15 @@ namespace PowerMacros.Entities
 
     public class MacroAction
     {
-        public string Key { get; set; }
-        public string Modifier { get; set; }
+        public MacroActionType Type { get; set; }
+        public Keys KeyCode { get; set; }
+        public Keys Modifiers { get; set; }
         public double Delay { get; set; }
+    }
+
+    public enum MacroActionType
+    {
+        KeyDown,
+        KeyUp
     }
 }
