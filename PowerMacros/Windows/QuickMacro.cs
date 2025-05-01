@@ -10,7 +10,7 @@ namespace PowerMacros.Windows
         private readonly QuickMacroControl _control;
         public QuickMacro() : base(null)
         {
-            this.Caption = "QuickMacro";
+            this.Caption = "Quick Macro";
             _control = new QuickMacroControl();
             this.Content = _control;
         }

@@ -89,24 +89,25 @@ namespace PowerMacros.Entities
             {
                 if (string.IsNullOrWhiteSpace(Code))
                 {
-                    Preview = "N/A";
+                    Preview = string.Empty;
+                    return;
                 }
-                else
+
+                var lines = Code.Split(new[] { '\r', '\n' });
+                var preview = lines[0];
+
+                if (preview.Length > 50)
                 {
-                    var lines = Code.Split(new[] { '\r', '\n' });
-                    var preview = lines[0];
-                    if (preview.Length > 50)
-                    {
-                        preview = preview.Substring(0, 50) + "...";
-                    }
-                    else if (lines.Length > 1)
-                    {
-                        preview += "...";
-                    }
-                    Preview = preview;
+                    preview = preview.Substring(0, 50) + "...";
                 }
+                else if (lines.Length > 1)
+                {
+                    preview += "...";
+                }
+
+                Preview = preview;
             }
-            else
+            else if (MacroType == MacroType.Action)
             {
                 Preview = $"Actions: {Actions.Count}";
             }
@@ -136,7 +137,7 @@ namespace PowerMacros.Entities
         public MacroActionType Type { get; set; }
         public Keys KeyCode { get; set; }
         public Keys Modifiers { get; set; }
-        public double Delay { get; set; }
+        public int Delay { get; set; }
     }
 
     public enum MacroActionType

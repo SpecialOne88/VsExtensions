@@ -171,7 +171,7 @@ namespace PowerMacros.Utils
 
             foreach (var action in actions)
             {
-                await Task.Delay((int)action.Delay);
+                await Task.Delay(action.Delay);
                 if (action.Type == MacroActionType.KeyDown)
                 {
                     inputSimulator.SimulateKeyDown(action.KeyCode, action.Modifiers);

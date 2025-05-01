@@ -77,21 +77,17 @@ namespace PowerMacros.ViewModels
                 var macro = MacrosList.FirstOrDefault(m => m.Name.Equals(macroName, System.StringComparison.InvariantCultureIgnoreCase));
                 if (macro != null)
                 {
-                    // Execute the macro
+                    if (ShouldClose)
+                    {
+                        CloseToolWindow();
+                    }
+
                     if (macro.MacroType == MacroType.Code)
                     {
                         TextEditor.InsertTextInCurrentView(macro.Code);
-                        if (ShouldClose)
-                        {
-                            CloseToolWindow();
-                        }
                     }
                     else if (macro.MacroType == MacroType.Action)
                     {
-                        if (ShouldClose)
-                        {
-                            CloseToolWindow();
-                        }
                         await InputSimulator.PlayRecordedMacro(macro.Actions);
                     }
                 }

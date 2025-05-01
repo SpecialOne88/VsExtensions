@@ -174,11 +174,11 @@ namespace PowerMacros.ViewModels
             }
         }
 
-        public RelayCommand ApplyCommand { get; }
-        public RelayCommand EditCommand { get; }
-        public RelayCommand DeleteCommand { get; }
-        public RelayCommand MoveUpCommand { get; }
-        public RelayCommand MoveDownCommand { get; }
+        public RelayCommand<Macro> ApplyCommand { get; }
+        public RelayCommand<Macro> EditCommand { get; }
+        public RelayCommand<Macro> DeleteCommand { get; }
+        public RelayCommand<Macro> MoveUpCommand { get; }
+        public RelayCommand<Macro> MoveDownCommand { get; }
         public RelayCommand AddMacroCommand { get; }
         public RelayCommand ImportCommand { get; }
         public RelayCommand ExportCommand { get; }
@@ -195,11 +195,11 @@ namespace PowerMacros.ViewModels
 
         public MacrosWindowViewModel()
         {
-            ApplyCommand = new RelayCommand(ApplyMacro);
-            EditCommand = new RelayCommand(EditMacro);
-            DeleteCommand = new RelayCommand(DeleteMacro);
-            MoveUpCommand = new RelayCommand(MoveMacroUp, CanMoveMacroUp);
-            MoveDownCommand = new RelayCommand(MoveMacroDown, CanMoveMacroDown);
+            ApplyCommand = new RelayCommand<Macro>(ApplyMacro);
+            EditCommand = new RelayCommand<Macro>(EditMacro);
+            DeleteCommand = new RelayCommand<Macro>(DeleteMacro);
+            MoveUpCommand = new RelayCommand<Macro>(MoveMacroUp, CanMoveMacroUp);
+            MoveDownCommand = new RelayCommand<Macro>(MoveMacroDown, CanMoveMacroDown);
             AddMacroCommand = new RelayCommand(AddNewMacro);
             ImportCommand = new RelayCommand(ImportMacros);
             ExportCommand = new RelayCommand(ExportMacros);
@@ -226,105 +226,82 @@ namespace PowerMacros.ViewModels
             UpdateMacroShortcutAndSave();
         }
 
-        private async void ApplyMacro(object parameter)
+        private async void ApplyMacro(Macro parameter)
         {
-            if (parameter is Macro macro)
+            try
             {
-                try
+                if (parameter.MacroType == MacroType.Code)
                 {
-                    if (macro.MacroType == MacroType.Code)
-                    {
-                        Utils.TextEditor.InsertTextInCurrentView(macro.Code);
-                    }
-                    else if (macro.MacroType == MacroType.Action)
-                    {
-                        await InputSimulator.PlayRecordedMacro(macro.Actions);
-                    }
+                    Utils.TextEditor.InsertTextInCurrentView(parameter.Code);
                 }
-                catch (Exception ex)
+                else if (parameter.MacroType == MacroType.Action)
                 {
-                    MessageBox.Show($"Failed to apply macro: {ex.Message}", "Error");
+                    await InputSimulator.PlayRecordedMacro(parameter.Actions);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to apply macro: {ex.Message}", "Error");
             }
         }
 
-        private void EditMacro(object parameter)
+        private void EditMacro(Macro parameter)
         {
-            if (parameter is Macro macro)
-            {
-                EditName = macro.Name;
-                EditDescription = macro.Description;
-                EditMacroType = macro.MacroType.ToString();
-                EditMacroCode = macro.Code;
-                EditMacroOriginalName = macro.Name;
-                _recordedActions = macro.Actions.Select(x => x).ToList();
+            EditName = parameter.Name;
+            EditDescription = parameter.Description;
+            EditMacroType = parameter.MacroType.ToString();
+            EditMacroCode = parameter.Code;
+            EditMacroOriginalName = parameter.Name;
+            _recordedActions = parameter.Actions.Select(x => x).ToList();
 
-                ListVisibility = Visibility.Hidden;
-                EditorVisibility = Visibility.Visible;
-            }
+            ListVisibility = Visibility.Hidden;
+            EditorVisibility = Visibility.Visible;
         }
 
-        private void DeleteMacro(object parameter)
+        private void DeleteMacro(Macro parameter)
         {
-            if (parameter is Macro macro)
+            if (MessageBox.Show($"Are you sure you want to delete {parameter.Name}?", "Delete Macro", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if (MessageBox.Show($"Are you sure you want to delete {macro.Name}?", "Delete Macro", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    MacrosList.Remove(macro);
-                    UpdateMacroShortcutAndSave();
-                }
-            }
-        }
-
-        private void MoveMacroUp(object parameter)
-        {
-            if (parameter is Macro macro)
-            {
-                int index = MacrosList.IndexOf(macro);
-                if (index > 0)
-                {
-                    MacrosList.Move(index, index - 1);
-                }
+                MacrosList.Remove(parameter);
                 UpdateMacroShortcutAndSave();
             }
         }
 
-        private bool CanMoveMacroUp(object parameter)
+        private void MoveMacroUp(Macro parameter)
         {
-            if (parameter is Macro macro)
+            int index = MacrosList.IndexOf(parameter);
+            if (index > 0)
             {
-                return MacrosList.IndexOf(macro) > 0;
+                MacrosList.Move(index, index - 1);
             }
-            return false;
+            UpdateMacroShortcutAndSave();
         }
 
-        private void MoveMacroDown(object parameter)
+        private bool CanMoveMacroUp(Macro parameter)
         {
-            if (parameter is Macro macro)
-            {
-                int index = MacrosList.IndexOf(macro);
-                if (index < MacrosList.Count - 1)
-                {
-                    MacrosList.Move(index, index + 1);
-                }
-                UpdateMacroShortcutAndSave();
-            }
+            return MacrosList.IndexOf(parameter) > 0;
         }
 
-        private bool CanMoveMacroDown(object parameter)
+        private void MoveMacroDown(Macro parameter)
         {
-            if (parameter is Macro macro)
+            int index = MacrosList.IndexOf(parameter);
+            if (index < MacrosList.Count - 1)
             {
-                return MacrosList.IndexOf(macro) < MacrosList.Count - 1;
+                MacrosList.Move(index, index + 1);
             }
-            return false;
+            UpdateMacroShortcutAndSave();
+        }
+
+        private bool CanMoveMacroDown(Macro parameter)
+        {
+            return MacrosList.IndexOf(parameter) < MacrosList.Count - 1;
         }
 
         private void UpdateMacroShortcutAndSave()
         {
             for (int i = 0; i < MacrosList.Count; i++)
             {
-                MacrosList[i].Shortcut = $"Shift+Ctrl+M, {i + 1}";
+                MacrosList[i].Shortcut = i < 10 ? $"Shift+Ctrl+M, {i + 1}" : "N/A";
                 MacrosList[i].UpdatePreview();
             }
             OnPropertyChanged(nameof(MacrosList));
@@ -575,7 +552,7 @@ namespace PowerMacros.ViewModels
                 Type = MacroActionType.KeyDown,
                 KeyCode = e.KeyCode,
                 Modifiers = e.Modifiers,
-                Delay = TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _recordingStartTime).TotalMilliseconds
+                Delay = (int)TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _recordingStartTime).TotalMilliseconds
             });
             _recordingStartTime = Stopwatch.GetTimestamp();
         }
@@ -592,7 +569,7 @@ namespace PowerMacros.ViewModels
                 Type = MacroActionType.KeyUp,
                 KeyCode = e.KeyCode,
                 Modifiers = e.Modifiers,
-                Delay = TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _recordingStartTime).TotalMilliseconds
+                Delay = (int)TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _recordingStartTime).TotalMilliseconds
             });
             _recordingStartTime = Stopwatch.GetTimestamp();
         }
@@ -609,6 +586,12 @@ namespace PowerMacros.ViewModels
             _macroKeyboardHook.KeyUp -= OnKeyUp;
             _macroKeyboardHook.Uninstall();
             _macroKeyboardHook = null;
+
+            // Normalize the delay of the first action to 100ms
+            if (_recordedActions.Count > 0)
+            {
+                _recordedActions[0].Delay = 100;
+            }
 
             MacroActionsText = Newtonsoft.Json.JsonConvert.SerializeObject(_recordedActions, Newtonsoft.Json.Formatting.Indented);
         }

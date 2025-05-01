@@ -8,13 +8,20 @@ namespace PowerMacros.Utils
     {
         public static List<Macro> LoadMacrosFromSettings()
         {
-            if (!string.IsNullOrWhiteSpace(UserSettings.Default.Macros?.ToString()))
+            try
             {
-                var macrosList = JsonConvert.DeserializeObject<List<Macro>>(UserSettings.Default.Macros?.ToString());
-                return macrosList;
-            }
+                if (!string.IsNullOrWhiteSpace(UserSettings.Default.Macros?.ToString()))
+                {
+                    var macrosList = JsonConvert.DeserializeObject<List<Macro>>(UserSettings.Default.Macros?.ToString());
+                    return macrosList;
+                }
 
-            return new List<Macro>();
+                return new List<Macro>();
+            }
+            catch (System.Exception)
+            {
+                return new List<Macro>();
+            }
         }
 
         public static void SaveMacrosToSettings(List<Macro> macros)

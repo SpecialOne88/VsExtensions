@@ -11,10 +11,13 @@ namespace PowerMacros.Commands
 {
     internal sealed class MacrosCommand
     {
-        public const int CommandId = 0x0100;
         public static readonly Guid CommandSet = new Guid("5e78657d-af1d-49b2-9217-a40c01798159");
         private readonly AsyncPackage package;
 
+        // Macro window command ID
+        public const int CommandId = 0x0100;
+
+        // Macros shortcuts command IDs
         public const int Macro1CommandId = 0x0200;
         public const int Macro2CommandId = 0x0201;
         public const int Macro3CommandId = 0x0202;
@@ -26,6 +29,7 @@ namespace PowerMacros.Commands
         public const int Macro9CommandId = 0x0208;
         public const int Macro0CommandId = 0x0209;
 
+        // Quick macro window command ID
         public const int QuickMacroCommandId = 0x020A;
 
         private MacrosCommand(AsyncPackage package, OleMenuCommandService commandService)
@@ -73,12 +77,13 @@ namespace PowerMacros.Commands
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            // Open MacrosWindow
             var window = this.package.FindToolWindow(typeof(PowerMacros.Windows.MacrosWindow), 0, true);
             if (window == null || (null == window.Frame))
             {
                 throw new NotSupportedException("Cannot create window");
             }
+
+            // Set the size of the window
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             const int width = 700;
             const int height = 350;
@@ -90,6 +95,8 @@ namespace PowerMacros.Commands
                 width,
                 height
             );
+
+            // Open window
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
@@ -106,6 +113,7 @@ namespace PowerMacros.Commands
                     return;
                 }
 
+                // find the macro with the selected shortcut
                 var selectedMacro = macros.FirstOrDefault(x => x.Shortcut.Equals($"Shift+Ctrl+M, {index}"));
                 if (selectedMacro == null)
                 {
@@ -136,6 +144,8 @@ namespace PowerMacros.Commands
             {
                 throw new NotSupportedException("Cannot create window");
             }
+
+            // Set the size of the window
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             const int width = 250;
             const int height = 100;
@@ -147,7 +157,11 @@ namespace PowerMacros.Commands
                 width,
                 height
             );
+
+            // Set the window to float only, does not seem to work?
             windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_FloatOnly);
+
+            // Open window
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
     }
