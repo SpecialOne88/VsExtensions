@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" ?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="PowerMacros.bcddfb4b-b63a-4484-b4ac-9210d10ff6f2" Version="1.0" Language="en-US" Publisher="João Simão" />
+        <Identity Id="PowerMacros.bcddfb4b-b63a-4484-b4ac-9210d10ff6f2" Version="1.0.1" Language="en-US" Publisher="João Simão" />
         <DisplayName>PowerMacros</DisplayName>
         <Description xml:space="preserve">Visual Studio extension that provides functionality to store and playback macros and code snippets.</Description>
         <MoreInfo>https://github.com/SpecialOne88/VsExtensions</MoreInfo>
-        <GettingStartedGuide>power-macros.html</GettingStartedGuide>
         <Icon>PowerMacroIcon.png</Icon>
         <PreviewImage>macro_window.png</PreviewImage>
         <Tags>Coding, Productivity</Tags>
